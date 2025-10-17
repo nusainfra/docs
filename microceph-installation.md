@@ -22,6 +22,7 @@ Pastikan setiap node:
 - Memiliki **disk tambahan** (misal `/dev/vdb`) untuk OSD (Object Storage Daemon).
 - Memiliki koneksi jaringan antar node.
 - Menggunakan user dengan hak akses **sudo**.
+- Disable firewall (`sudo ufw disable`)
 
 ---
 
@@ -35,7 +36,6 @@ Jalankan di **semua node (01, 02, dan 03):**
 sudo snap install microceph
 sudo snap refresh --hold microceph
 ```
-
 ---
 
 ### **Langkah 2 — Bootstrap Cluster**
@@ -44,6 +44,10 @@ Jalankan **hanya di node pertama (`ceph-storage-01`)**:
 
 ```bash
 sudo microceph cluster bootstrap
+```
+Jika ada 2 nic network tambahkan argument `--cluster-network` `--microceph-ip`
+```bash
+sudo microceph cluster bootstrap --cluster-network 192.168.21.0/24 --microceph-ip 192.168.21.3
 ```
 
 Cek status cluster:
@@ -76,6 +80,10 @@ Di **node 2 dan 3**, jalankan perintah berikut dengan token yang didapat dari la
 
 ```bash
 sudo microceph cluster join <TOKEN_DARI_NODE_01>
+```
+Jika ada 2 nic network tambahkan argument `--microceph-ip`
+```bash
+sudo microceph cluster join --microceph-ip <IP> <TOKEN_DARI_NODE_01>
 ```
 
 Contoh:
