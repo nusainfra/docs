@@ -87,9 +87,9 @@ sudo microceph cluster join eyJzZWNyZXQiOiIxODA3ZGFiYWQ2Y2IzYzI5NGYwNWRlY2U5NDQ1
 
 ### **Langkah 5 — Tambahkan Disk OSD**
 
-Setiap node yang memiliki disk tambahan (`/dev/vdb`) perlu menambahkannya sebagai storage pool Ceph.
+Setiap node yang memiliki disk tambahan (misal `/dev/vdb`) perlu menambahkannya sebagai storage pool Ceph.
 
-💡 **Ya, perintah ini harus dijalankan di setiap node yang memiliki disk!**
+💡 **Perintah ini harus dijalankan di setiap node yang memiliki disk!**
 
 Di setiap node (`ceph-storage-01`, `ceph-storage-02`, `ceph-storage-03`):
 
@@ -113,7 +113,7 @@ sudo microceph.ceph status
 
 ---
 
-### **Langkah 7 — Membuat Client Key untuk Kubernetes**
+### **Langkah 7 — Membuat Client Key misalnya untuk Kubernetes**
 
 Buat user khusus `client.k8s` dan simpan keyring-nya:
 
