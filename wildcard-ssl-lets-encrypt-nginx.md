@@ -7,7 +7,7 @@ Domain contoh: `*.prod.jakarta.nusainfra.co.id`
 ## 1. Persiapan Awal
 Pastikan:
 - Server menggunakan Ubuntu/Debian.
-- Kamu punya akses ke DNS zone `monitoring.cloudeka.id`.
+- Kamu punya akses ke DNS zone `nusainfra.com`.
 - Port 80 dan 443 terbuka di firewall.
 - Nginx dan Certbot sudah terpasang.
 
@@ -24,7 +24,7 @@ Wildcard hanya bisa dibuat menggunakan **DNS-01 challenge**, jadi kamu perlu men
 
 Jalankan perintah:
 ```bash
-sudo certbot -d "*.prod.jakarta.nusainfra.co.id" -d inf-dr.monitoring.cloudeka.id --manual --preferred-challenges dns certonly
+sudo certbot -d "*.prod.jakarta.nusainfra.co.id" -d prod.jakarta.nusainfra.co.id --manual --preferred-challenges dns certonly
 ```
 
 Certbot akan memberikan instruksi seperti ini:
@@ -39,7 +39,7 @@ _acme-challenge.prod.jakarta.nusainfra.co.id with the following value:
 
 ## 3. Tambahkan DNS Record
 
-Masuk ke DNS Manager tempat domain `monitoring.cloudeka.id` dikelola  
+Masuk ke DNS Manager tempat domain `nusainfra.com` dikelola  
 (contoh: Cloudflare, cPanel, Google Cloud DNS, Route53, dll).
 
 Tambahkan record berikut:
@@ -65,14 +65,14 @@ Setelah terverifikasi, tekan **Enter** di terminal Certbot untuk melanjutkan pro
 Jika berhasil, akan muncul pesan:
 ```
 Congratulations! Your certificate and chain have been saved at:
-/etc/letsencrypt/live/inf-dr.monitoring.cloudeka.id/fullchain.pem
+/etc/letsencrypt/live/prod.jakarta.nusainfra.co.id/fullchain.pem
 Your key file has been saved at:
-/etc/letsencrypt/live/inf-dr.monitoring.cloudeka.id/privkey.pem
+/etc/letsencrypt/live/prod.jakarta.nusainfra.co.id/privkey.pem
 ```
 
 Lokasi file:
 ```
-/etc/letsencrypt/live/inf-dr.monitoring.cloudeka.id/
+/etc/letsencrypt/live/prod.jakarta.nusainfra.co.id/
 ├── cert.pem
 ├── chain.pem
 ├── fullchain.pem
@@ -85,7 +85,7 @@ Lokasi file:
 
 Buat file konfigurasi baru:
 ```bash
-sudo nano /etc/nginx/sites-available/inf-dr.monitoring.cloudeka.id.conf
+sudo nano /etc/nginx/sites-available/prod.jakarta.nusainfra.co.id.conf
 ```
 
 Isi dengan konfigurasi berikut:
@@ -93,7 +93,7 @@ Isi dengan konfigurasi berikut:
 ```nginx
 server {
     listen 80;
-    server_name inf-dr.monitoring.cloudeka.id *.prod.jakarta.nusainfra.co.id;
+    server_name prod.jakarta.nusainfra.co.id *.prod.jakarta.nusainfra.co.id;
 
     # Redirect semua HTTP ke HTTPS
     return 301 https://$host$request_uri;
@@ -101,10 +101,10 @@ server {
 
 server {
     listen 443 ssl http2;
-    server_name inf-dr.monitoring.cloudeka.id *.prod.jakarta.nusainfra.co.id;
+    server_name prod.jakarta.nusainfra.co.id *.prod.jakarta.nusainfra.co.id;
 
-    ssl_certificate /etc/letsencrypt/live/inf-dr.monitoring.cloudeka.id/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/inf-dr.monitoring.cloudeka.id/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/prod.jakarta.nusainfra.co.id/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/prod.jakarta.nusainfra.co.id/privkey.pem;
 
     # Pengaturan keamanan tambahan
     ssl_protocols TLSv1.2 TLSv1.3;
@@ -127,7 +127,7 @@ server {
 ## 6. Aktifkan Konfigurasi dan Uji Nginx
 
 ```bash
-sudo ln -s /etc/nginx/sites-available/inf-dr.monitoring.cloudeka.id.conf /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/prod.jakarta.nusainfra.co.id.conf /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl reload nginx
 ```
@@ -161,12 +161,12 @@ Ini akan memeriksa setiap hari jam 03:00, dan reload Nginx otomatis jika sertifi
 
 Uji dengan:
 ```bash
-curl -v https://inf-dr.monitoring.cloudeka.id
+curl -v https://prod.jakarta.nusainfra.co.id
 ```
 
 Atau buka di browser:
 ```
-https://inf-dr.monitoring.cloudeka.id
+https://prod.jakarta.nusainfra.co.id
 ```
 
 Cek validitas SSL menggunakan:
@@ -199,9 +199,9 @@ Kamu tidak perlu membuat sertifikat tambahan — cukup satu wildcard.
 
 | File | Lokasi | Keterangan |
 |------|---------|------------|
-| Fullchain | `/etc/letsencrypt/live/inf-dr.monitoring.cloudeka.id/fullchain.pem` | Sertifikat publik |
-| Private Key | `/etc/letsencrypt/live/inf-dr.monitoring.cloudeka.id/privkey.pem` | Kunci privat |
-| Konfigurasi Nginx | `/etc/nginx/sites-available/inf-dr.monitoring.cloudeka.id.conf` | Virtual host |
+| Fullchain | `/etc/letsencrypt/live/prod.jakarta.nusainfra.co.id/fullchain.pem` | Sertifikat publik |
+| Private Key | `/etc/letsencrypt/live/prod.jakarta.nusainfra.co.id/privkey.pem` | Kunci privat |
+| Konfigurasi Nginx | `/etc/nginx/sites-available/prod.jakarta.nusainfra.co.id.conf` | Virtual host |
 | Log Nginx | `/var/log/nginx/inf-dr.access.log`, `/var/log/nginx/inf-dr.error.log` | Log akses dan error |
 
 ---
