@@ -1,6 +1,6 @@
 # Wildcard SSL Let's Encrypt untuk Nginx
 Panduan lengkap membuat sertifikat wildcard Let's Encrypt dan menggunakannya di Nginx.  
-Domain contoh: `*.prod.jakarta.nusainfra.co.id`
+Domain contoh: `*.prod.jakarta.nusainfra.com`
 
 ---
 
@@ -24,13 +24,13 @@ Wildcard hanya bisa dibuat menggunakan **DNS-01 challenge**, jadi kamu perlu men
 
 Jalankan perintah:
 ```bash
-sudo certbot -d "*.prod.jakarta.nusainfra.co.id" -d prod.jakarta.nusainfra.co.id --manual --preferred-challenges dns certonly
+sudo certbot -d "*.prod.jakarta.nusainfra.com" -d prod.jakarta.nusainfra.com --manual --preferred-challenges dns certonly
 ```
 
 Certbot akan memberikan instruksi seperti ini:
 ```
 Please deploy a DNS TXT record under the name
-_acme-challenge.prod.jakarta.nusainfra.co.id with the following value:
+_acme-challenge.prod.jakarta.nusainfra.com with the following value:
 
 8nKfjhH2v9FJqRla_9a4YQhZC1A7bV8Hh7v7sF4H6Gs
 ```
@@ -46,12 +46,12 @@ Tambahkan record berikut:
 
 | Type | Name / Host | Value | TTL |
 |------|--------------|-------|-----|
-| TXT | `_acme-challenge.prod.jakarta.nusainfra.co.id` | `8nKfjhH2v9FJqRla_9a4YQhZC1A7bV8Hh7v7sF4H6Gs` | 300 |
+| TXT | `_acme-challenge.prod.jakarta.nusainfra.com` | `8nKfjhH2v9FJqRla_9a4YQhZC1A7bV8Hh7v7sF4H6Gs` | 300 |
 
 ### Verifikasi DNS
 Gunakan perintah berikut untuk memastikan DNS sudah aktif:
 ```bash
-dig TXT _acme-challenge.prod.jakarta.nusainfra.co.id +short
+dig TXT _acme-challenge.prod.jakarta.nusainfra.com +short
 ```
 
 Output yang benar akan menampilkan kode verifikasi yang sama seperti yang diberikan Certbot.
@@ -65,14 +65,14 @@ Setelah terverifikasi, tekan **Enter** di terminal Certbot untuk melanjutkan pro
 Jika berhasil, akan muncul pesan:
 ```
 Congratulations! Your certificate and chain have been saved at:
-/etc/letsencrypt/live/prod.jakarta.nusainfra.co.id/fullchain.pem
+/etc/letsencrypt/live/prod.jakarta.nusainfra.com/fullchain.pem
 Your key file has been saved at:
-/etc/letsencrypt/live/prod.jakarta.nusainfra.co.id/privkey.pem
+/etc/letsencrypt/live/prod.jakarta.nusainfra.com/privkey.pem
 ```
 
 Lokasi file:
 ```
-/etc/letsencrypt/live/prod.jakarta.nusainfra.co.id/
+/etc/letsencrypt/live/prod.jakarta.nusainfra.com/
 ├── cert.pem
 ├── chain.pem
 ├── fullchain.pem
@@ -85,7 +85,7 @@ Lokasi file:
 
 Buat file konfigurasi baru:
 ```bash
-sudo nano /etc/nginx/sites-available/prod.jakarta.nusainfra.co.id.conf
+sudo nano /etc/nginx/sites-available/prod.jakarta.nusainfra.com.conf
 ```
 
 Isi dengan konfigurasi berikut:
@@ -93,7 +93,7 @@ Isi dengan konfigurasi berikut:
 ```nginx
 server {
     listen 80;
-    server_name prod.jakarta.nusainfra.co.id *.prod.jakarta.nusainfra.co.id;
+    server_name prod.jakarta.nusainfra.com *.prod.jakarta.nusainfra.com;
 
     # Redirect semua HTTP ke HTTPS
     return 301 https://$host$request_uri;
@@ -101,10 +101,10 @@ server {
 
 server {
     listen 443 ssl http2;
-    server_name prod.jakarta.nusainfra.co.id *.prod.jakarta.nusainfra.co.id;
+    server_name prod.jakarta.nusainfra.com *.prod.jakarta.nusainfra.com;
 
-    ssl_certificate /etc/letsencrypt/live/prod.jakarta.nusainfra.co.id/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/prod.jakarta.nusainfra.co.id/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/prod.jakarta.nusainfra.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/prod.jakarta.nusainfra.com/privkey.pem;
 
     # Pengaturan keamanan tambahan
     ssl_protocols TLSv1.2 TLSv1.3;
@@ -127,7 +127,7 @@ server {
 ## 6. Aktifkan Konfigurasi dan Uji Nginx
 
 ```bash
-sudo ln -s /etc/nginx/sites-available/prod.jakarta.nusainfra.co.id.conf /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/prod.jakarta.nusainfra.com.conf /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl reload nginx
 ```
@@ -161,12 +161,12 @@ Ini akan memeriksa setiap hari jam 03:00, dan reload Nginx otomatis jika sertifi
 
 Uji dengan:
 ```bash
-curl -v https://prod.jakarta.nusainfra.co.id
+curl -v https://prod.jakarta.nusainfra.com
 ```
 
 Atau buka di browser:
 ```
-https://prod.jakarta.nusainfra.co.id
+https://prod.jakarta.nusainfra.com
 ```
 
 Cek validitas SSL menggunakan:
@@ -176,9 +176,9 @@ Cek validitas SSL menggunakan:
 
 ## 9. (Opsional) Banyak Subdomain dengan Satu SSL
 Wildcard ini otomatis melindungi semua subdomain, misalnya:
-- `grafana.prod.jakarta.nusainfra.co.id`
-- `prometheus.prod.jakarta.nusainfra.co.id`
-- `api.prod.jakarta.nusainfra.co.id`
+- `grafana.prod.jakarta.nusainfra.com`
+- `prometheus.prod.jakarta.nusainfra.com`
+- `api.prod.jakarta.nusainfra.com`
 
 Kamu tidak perlu membuat sertifikat tambahan — cukup satu wildcard.
 
@@ -188,7 +188,7 @@ Kamu tidak perlu membuat sertifikat tambahan — cukup satu wildcard.
 
 | Masalah | Penyebab Umum | Solusi |
 |----------|----------------|--------|
-| `NXDOMAIN` saat verifikasi | TXT record belum dibuat di zone yang benar | Pastikan `_acme-challenge.prod.jakarta.nusainfra.co.id` benar |
+| `NXDOMAIN` saat verifikasi | TXT record belum dibuat di zone yang benar | Pastikan `_acme-challenge.prod.jakarta.nusainfra.com` benar |
 | `Timed out during DNS verification` | DNS belum propagasi | Tunggu 1–5 menit atau gunakan TTL kecil |
 | Browser tetap HTTP | Nginx belum redirect atau sertifikat belum aktif | Pastikan block `listen 443` aktif dan reload Nginx |
 | Renew gagal | Menggunakan mode manual | Gunakan plugin DNS (Cloudflare, Route53, dll) untuk otomatisasi |
@@ -199,12 +199,12 @@ Kamu tidak perlu membuat sertifikat tambahan — cukup satu wildcard.
 
 | File | Lokasi | Keterangan |
 |------|---------|------------|
-| Fullchain | `/etc/letsencrypt/live/prod.jakarta.nusainfra.co.id/fullchain.pem` | Sertifikat publik |
-| Private Key | `/etc/letsencrypt/live/prod.jakarta.nusainfra.co.id/privkey.pem` | Kunci privat |
-| Konfigurasi Nginx | `/etc/nginx/sites-available/prod.jakarta.nusainfra.co.id.conf` | Virtual host |
+| Fullchain | `/etc/letsencrypt/live/prod.jakarta.nusainfra.com/fullchain.pem` | Sertifikat publik |
+| Private Key | `/etc/letsencrypt/live/prod.jakarta.nusainfra.com/privkey.pem` | Kunci privat |
+| Konfigurasi Nginx | `/etc/nginx/sites-available/prod.jakarta.nusainfra.com.conf` | Virtual host |
 | Log Nginx | `/var/log/nginx/inf-dr.access.log`, `/var/log/nginx/inf-dr.error.log` | Log akses dan error |
 
 ---
 
 ## Selesai!
-Sekarang domain `*.prod.jakarta.nusainfra.co.id` sudah aman dengan HTTPS wildcard certificate dari Let's Encrypt 🚀
+Sekarang domain `*.prod.jakarta.nusainfra.com` sudah aman dengan HTTPS wildcard certificate dari Let's Encrypt 🚀
