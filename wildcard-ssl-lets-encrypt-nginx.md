@@ -1,6 +1,6 @@
 # Wildcard SSL Let's Encrypt untuk Nginx
 Panduan lengkap membuat sertifikat wildcard Let's Encrypt dan menggunakannya di Nginx.  
-Domain contoh: `*.inf-dr.monitoring.cloudeka.id`
+Domain contoh: `*.prod.jakarta.nusainfra.co.id`
 
 ---
 
@@ -24,13 +24,13 @@ Wildcard hanya bisa dibuat menggunakan **DNS-01 challenge**, jadi kamu perlu men
 
 Jalankan perintah:
 ```bash
-sudo certbot -d "*.inf-dr.monitoring.cloudeka.id" -d inf-dr.monitoring.cloudeka.id --manual --preferred-challenges dns certonly
+sudo certbot -d "*.prod.jakarta.nusainfra.co.id" -d inf-dr.monitoring.cloudeka.id --manual --preferred-challenges dns certonly
 ```
 
 Certbot akan memberikan instruksi seperti ini:
 ```
 Please deploy a DNS TXT record under the name
-_acme-challenge.inf-dr.monitoring.cloudeka.id with the following value:
+_acme-challenge.prod.jakarta.nusainfra.co.id with the following value:
 
 8nKfjhH2v9FJqRla_9a4YQhZC1A7bV8Hh7v7sF4H6Gs
 ```
@@ -46,12 +46,12 @@ Tambahkan record berikut:
 
 | Type | Name / Host | Value | TTL |
 |------|--------------|-------|-----|
-| TXT | `_acme-challenge.inf-dr.monitoring.cloudeka.id` | `8nKfjhH2v9FJqRla_9a4YQhZC1A7bV8Hh7v7sF4H6Gs` | 300 |
+| TXT | `_acme-challenge.prod.jakarta.nusainfra.co.id` | `8nKfjhH2v9FJqRla_9a4YQhZC1A7bV8Hh7v7sF4H6Gs` | 300 |
 
 ### Verifikasi DNS
 Gunakan perintah berikut untuk memastikan DNS sudah aktif:
 ```bash
-dig TXT _acme-challenge.inf-dr.monitoring.cloudeka.id +short
+dig TXT _acme-challenge.prod.jakarta.nusainfra.co.id +short
 ```
 
 Output yang benar akan menampilkan kode verifikasi yang sama seperti yang diberikan Certbot.
@@ -93,7 +93,7 @@ Isi dengan konfigurasi berikut:
 ```nginx
 server {
     listen 80;
-    server_name inf-dr.monitoring.cloudeka.id *.inf-dr.monitoring.cloudeka.id;
+    server_name inf-dr.monitoring.cloudeka.id *.prod.jakarta.nusainfra.co.id;
 
     # Redirect semua HTTP ke HTTPS
     return 301 https://$host$request_uri;
@@ -101,7 +101,7 @@ server {
 
 server {
     listen 443 ssl http2;
-    server_name inf-dr.monitoring.cloudeka.id *.inf-dr.monitoring.cloudeka.id;
+    server_name inf-dr.monitoring.cloudeka.id *.prod.jakarta.nusainfra.co.id;
 
     ssl_certificate /etc/letsencrypt/live/inf-dr.monitoring.cloudeka.id/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/inf-dr.monitoring.cloudeka.id/privkey.pem;
@@ -176,9 +176,9 @@ Cek validitas SSL menggunakan:
 
 ## 9. (Opsional) Banyak Subdomain dengan Satu SSL
 Wildcard ini otomatis melindungi semua subdomain, misalnya:
-- `grafana.inf-dr.monitoring.cloudeka.id`
-- `prometheus.inf-dr.monitoring.cloudeka.id`
-- `api.inf-dr.monitoring.cloudeka.id`
+- `grafana.prod.jakarta.nusainfra.co.id`
+- `prometheus.prod.jakarta.nusainfra.co.id`
+- `api.prod.jakarta.nusainfra.co.id`
 
 Kamu tidak perlu membuat sertifikat tambahan — cukup satu wildcard.
 
@@ -188,7 +188,7 @@ Kamu tidak perlu membuat sertifikat tambahan — cukup satu wildcard.
 
 | Masalah | Penyebab Umum | Solusi |
 |----------|----------------|--------|
-| `NXDOMAIN` saat verifikasi | TXT record belum dibuat di zone yang benar | Pastikan `_acme-challenge.inf-dr.monitoring.cloudeka.id` benar |
+| `NXDOMAIN` saat verifikasi | TXT record belum dibuat di zone yang benar | Pastikan `_acme-challenge.prod.jakarta.nusainfra.co.id` benar |
 | `Timed out during DNS verification` | DNS belum propagasi | Tunggu 1–5 menit atau gunakan TTL kecil |
 | Browser tetap HTTP | Nginx belum redirect atau sertifikat belum aktif | Pastikan block `listen 443` aktif dan reload Nginx |
 | Renew gagal | Menggunakan mode manual | Gunakan plugin DNS (Cloudflare, Route53, dll) untuk otomatisasi |
@@ -207,4 +207,4 @@ Kamu tidak perlu membuat sertifikat tambahan — cukup satu wildcard.
 ---
 
 ## Selesai!
-Sekarang domain `*.inf-dr.monitoring.cloudeka.id` sudah aman dengan HTTPS wildcard certificate dari Let's Encrypt 🚀
+Sekarang domain `*.prod.jakarta.nusainfra.co.id` sudah aman dengan HTTPS wildcard certificate dari Let's Encrypt 🚀
