@@ -146,3 +146,5 @@ kubectl logs -n metallb-system -l component=speaker
 ---
 
 © 2025 nusainfra.com — Implementasi MetalLB di Kubernetes
+
+
