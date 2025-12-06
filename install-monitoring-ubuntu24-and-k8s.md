@@ -111,7 +111,7 @@ sudo systemctl status prometheus
 
 ## 4) Install node_exporter (di VM)
 ```bash
-NODE_VER="1.5.0"
+NODE_VER="1.10.2"
 cd /tmp
 wget https://github.com/prometheus/node_exporter/releases/download/v${NODE_VER}/node_exporter-${NODE_VER}.linux-amd64.tar.gz
 tar xvf node_exporter-${NODE_VER}.linux-amd64.tar.gz
