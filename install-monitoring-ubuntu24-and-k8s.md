@@ -169,7 +169,7 @@ Akses Grafana:
 ## 6) Install Loki (Single Binary)
 
 ```bash
-LOKI_VER="2.8.0"
+LOKI_VER="3.6.2"
 cd /tmp
 wget https://github.com/grafana/loki/releases/download/v${LOKI_VER}/loki-linux-amd64.zip
 unzip loki-linux-amd64.zip
