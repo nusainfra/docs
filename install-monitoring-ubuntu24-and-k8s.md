@@ -278,30 +278,34 @@ kubectl create ns loki-stack
 
 ### File `prometheus-agent-values.yaml`
 ```yaml
-server:
+prometheus:
   enabled: true
-  extraArgs:
-    - "--agent"
-  ruleFiles: []
-  service:
-    type: ClusterIP
-
-alertmanager:
+  agentMode: true
+  prometheusSpec:
+    remoteWrite:
+      - url: "http://207.148.122.217:9090/api/v1/write"
+grafana:
   enabled: false
-
-pushgateway:
-  enabled: false
-
 kubeStateMetrics:
-  enabled: false
-
+  enabled: true
 nodeExporter:
+  enabled: true
+  operatingSystems:
+    linux:
+      enabled: true
+    aix:
+      enabled: false
+    darwin:
+      enabled: false
+defaultRules:
+  create: false
+alertmanager:
   enabled: false
 ```
 
 ### Install
 ```bash
-helm install prometheus-agent prometheus-community/prometheus   -n observability   -f prometheus-agent-values.yaml
+helm upgrade --install prometheus-agent prometheus-community/kube-prometheus-stack   -n observability   -f prometheus-agent-values.yaml
 ```
 
 ---
@@ -312,18 +316,7 @@ helm install prometheus-agent prometheus-community/prometheus   -n observability
 ```yaml
 config:
   clients:
-    - url: http://loki.loki-stack:3100/loki/api/v1/push
-  positions:
-    filename: /var/log/positions.yaml
-  scrape_configs:
-    - job_name: kubernetes-pods-name
-      pipeline_stages: []
-      kubernetes_sd_configs:
-        - role: pod
-      relabel_configs:
-        - action: replace
-          source_labels: [__meta_kubernetes_pod_label_name]
-          target_label: job
+    - url: http://207.148.122.217:3100/loki/api/v1/push
 ```
 
 ### Install
