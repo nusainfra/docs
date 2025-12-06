@@ -183,37 +183,47 @@ sudo chown loki:loki /var/lib/loki
 
 ### Config `/etc/loki/local-config.yaml`
 ```yaml
-auth_enabled: false
-server:
-  http_listen_port: 3100
-  log_level: info
+common:
+  instance_addr: 127.0.0.1
+  path_prefix: /tmp/loki
+  storage:
+    filesystem:
+      chunks_directory: /var/lib/loki/chunks
+      rules_directory: /var/lib/loki/rules
+  replication_factor: 1
+  ring:
+    kvstore:
+      store: inmemory
 
-ingester:
-  wal:
-    enabled: false
+query_range:
+  results_cache:
+    cache:
+      embedded_cache:
+        enabled: true
+        max_size_mb: 100
+
+limits_config:
+  metric_aggregation_enabled: true
+  enable_multi_variant_queries: true
 
 schema_config:
   configs:
     - from: 2020-10-24
-      store: filesystem
+      store: tsdb
       object_store: filesystem
-      schema: v11
+      schema: v13
       index:
         prefix: index_
         period: 24h
 
-storage_config:
-  filesystem:
-    directory: /var/lib/loki/chunks
+pattern_ingester:
+  enabled: true
+  metric_aggregation:
+    loki_address: localhost:3100
 
-limits_config:
-  enforce_metric_name: false
 
-ruler:
-  storage:
-    type: filesystem
-    filesystem:
-      directory: /var/lib/loki/rules
+frontend:
+  encoding: protobuf
 ```
 
 ### Systemd `/etc/systemd/system/loki.service`
