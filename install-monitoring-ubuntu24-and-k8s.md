@@ -52,7 +52,7 @@ sudo ufw enable
 
 ### Download & Setup
 ```bash
-PROM_VER="2.50.0"
+PROM_VER="3.80.0"
 cd /tmp
 wget https://github.com/prometheus/prometheus/releases/download/v${PROM_VER}/prometheus-${PROM_VER}.linux-amd64.tar.gz
 
