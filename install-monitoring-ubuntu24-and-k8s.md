@@ -62,7 +62,6 @@ sudo mkdir -p /etc/prometheus /var/lib/prometheus
 sudo tar xvf prometheus-${PROM_VER}.linux-amd64.tar.gz
 cd prometheus-${PROM_VER}.linux-amd64
 sudo cp prometheus promtool /usr/local/bin/
-sudo cp -r consoles console_libraries /etc/prometheus/
 ```
 
 ### Config Prometheus `/etc/prometheus/prometheus.yml`
