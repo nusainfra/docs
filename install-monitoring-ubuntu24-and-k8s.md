@@ -182,13 +182,21 @@ sudo chown loki:loki /var/lib/loki
 
 ### Config `/etc/loki/local-config.yaml`
 ```yaml
+auth_enabled: false
+
+server:
+  http_listen_port: 3100
+  grpc_listen_port: 9096
+  log_level: debug
+  grpc_server_max_concurrent_streams: 1000
+
 common:
   instance_addr: 127.0.0.1
   path_prefix: /tmp/loki
   storage:
     filesystem:
-      chunks_directory: /var/lib/loki/chunks
-      rules_directory: /var/lib/loki/rules
+      chunks_directory: /tmp/loki/chunks
+      rules_directory: /tmp/loki/rules
   replication_factor: 1
   ring:
     kvstore:
@@ -220,6 +228,8 @@ pattern_ingester:
   metric_aggregation:
     loki_address: localhost:3100
 
+ruler:
+  alertmanager_url: http://localhost:9093
 
 frontend:
   encoding: protobuf
